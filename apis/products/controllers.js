@@ -26,7 +26,8 @@ exports.productUpdate = async (request, response) => {
         const product = await Product.findByIdAndUpdate(
         { _id: productId },
         request.body, 
-        { new: true, runValidators: true } // returns the updated product 
+        // Returns the updated product 
+        { new: true, runValidators: true } 
     );
         response.json(product);
     } catch (error) {
