@@ -8,6 +8,9 @@ const {
   fetchProduct,
 } = require("./controllers");
 
+const router = express.Router();
+
+
 // Param Middleware
 router.param("productId", async (req, res, next, productId) => {
   const product = await fetchProduct(productId, next);
@@ -20,9 +23,6 @@ router.param("productId", async (req, res, next, productId) => {
     next (err);
   }
 });
-
-
-const router = express.Router();
 
 router.get("/", productListFetch);
 
