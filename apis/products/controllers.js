@@ -1,6 +1,15 @@
 const products = require("../../products");
 const Product = require("../../db/models/Product");
 
+exports.fetchProduct = async (productId, next) => {
+  try {
+    const product = await Product.findById(productId);
+    return product;
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.productListFetch = async (request, response, next) => {
   try {
     const products = await Product.find();
@@ -20,8 +29,7 @@ exports.productCreate = async (request, response) => {
   }
 };
 
-exports.productUpdate = async (request, response) => {
-  const { productId } = request.params;
+exports.productUpdate = async (request, response, next) => {
   try {
     const product = await Product.findByIdAndUpdate(
       { _id: productId },
@@ -29,24 +37,17 @@ exports.productUpdate = async (request, response) => {
       // Returns the updated product
       { new: true, runValidators: true }
     );
-    response.json(product);
+    response.status(204).end();
   } catch (error) {
-    return response.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.productDelete = async (request, response) => {
-  const { productId } = request.params;
-
+exports.productDelete = async (request, response, next) => {
   try {
-    const product = await Product.findById(productId);
-    if (product) {
-      await product.remove();
-      return response.status(204).end();
-    } else {
-      return response.status(404).json({ message: "Product not found." });
-    }
+    await request.product.remove();
+    response.status(204).end();
   } catch (error) {
-    return response.status(500).json({ message: error.message });
+    next(error);
   }
 };
